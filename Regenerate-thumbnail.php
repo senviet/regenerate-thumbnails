@@ -62,9 +62,18 @@ class RegenerateThumbnail {
 		$inlineFile = plugins_url('js/inline.js', __FILE__ );
 		echo "<script src='".$inlineFile."'></script>";
 	}
-	public function ajax_handler(){
-		wp_send_json(array('success'=>true,'message'=>'success'));
+public function ajax_handler(){
+	if(!isset($_POST['attachmentId'])){
+		wp_send_json(array('success'=>false, 'message'=>'Your have to provice the attachment ID.'));
 	}
+	$attachmentId = abs($_POST['attachmentId']);
+	$result = $this->regenerate($attachmentId);
+	if(is_wp_error($result)){
+		wp_send_json(array('success'=>false, 'message'=>$result->get_error_message()));
+
+	}
+	wp_send_json(array('success'=>true,'message'=>'generate success'));
+}
 }
 
 new RegenerateThumbnail();
