@@ -13,6 +13,8 @@ License: GPL2
 class RegenerateThumbnail {
 	public function __construct() {
 		add_filter( 'media_row_actions', array( $this, 'add_media_row_action' ), 10, 2 );
+		add_action( 'admin_head-upload.php', array( $this, 'add_inline_script' ) );
+
 	}
 
 	public function regenerate( $attachmentId ) {
@@ -55,6 +57,10 @@ class RegenerateThumbnail {
 
 		return $actions;
 	}
+public function add_inline_script(){
+	$inlineFile = plugins_url('js/inline.js', __FILE__ );
+	echo "<script src='".$inlineFile."'></script>";
+}
 }
 
 new RegenerateThumbnail();
