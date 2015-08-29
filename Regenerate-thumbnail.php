@@ -45,4 +45,3 @@ class RegenerateThumbnail{
 		return true;;
 	}
 }
-}
