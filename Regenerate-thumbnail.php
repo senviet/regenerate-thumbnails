@@ -14,6 +14,7 @@ class RegenerateThumbnail {
 	public function __construct() {
 		add_filter( 'media_row_actions', array( $this, 'add_media_row_action' ), 10, 2 );
 		add_action( 'admin_head-upload.php', array( $this, 'add_inline_script' ) );
+		add_action( 'wp_ajax_regeneratethumbnail', array( $this, 'ajax_handler' ) );
 
 	}
 
@@ -57,10 +58,13 @@ class RegenerateThumbnail {
 
 		return $actions;
 	}
-public function add_inline_script(){
-	$inlineFile = plugins_url('js/inline.js', __FILE__ );
-	echo "<script src='".$inlineFile."'></script>";
-}
+	public function add_inline_script(){
+		$inlineFile = plugins_url('js/inline.js', __FILE__ );
+		echo "<script src='".$inlineFile."'></script>";
+	}
+	public function ajax_handler(){
+		wp_send_json(array('success'=>true,'message'=>'success'));
+	}
 }
 
 new RegenerateThumbnail();
