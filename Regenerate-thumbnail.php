@@ -10,3 +10,8 @@ Author URI: http://nvduoc@senviet.org
 License: GPL2
 */
 
+class RegenerateThumbnail{
+	public function __construct(){
+
+	}
+}
