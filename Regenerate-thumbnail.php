@@ -11,13 +11,24 @@ License: GPL2
 */
 
 class RegenerateThumbnail {
+
+	/**
+	 * The constructor
+	 */
 	public function __construct() {
 		add_filter( 'media_row_actions', array( $this, 'add_media_row_action' ), 10, 2 );
-		add_action( 'admin_head-upload.php', array( $this, 'add_inline_script' ) );
+		add_action( 'admin_head-upload.php', array( $this, 'add_script' ) );
 		add_action( 'wp_ajax_regeneratethumbnail', array( $this, 'ajax_handler' ) );
 
 	}
 
+	/**
+	 * Regenerate the thumbnail
+	 *
+	 * @param $attachmentId int the attachment id
+	 *
+	 * @return bool|mixed|WP_Error
+	 */
 	public function regenerate( $attachmentId ) {
 
 		if ( ! current_user_can( 'manage_options' ) ) {
@@ -50,6 +61,14 @@ class RegenerateThumbnail {
 		return true;
 	}
 
+	/**
+	 * Add action link to media row
+	 *
+	 * @param $actions
+	 * @param $post
+	 *
+	 * @return mixed
+	 */
 	public function add_media_row_action( $actions, $post ) {
 		if ( !preg_match( '!^image/!', get_post_mime_type( $post ) ) || ! current_user_can( 'manage_options' ) ) {
 			return $actions;
@@ -58,22 +77,30 @@ class RegenerateThumbnail {
 
 		return $actions;
 	}
-	public function add_inline_script(){
+
+	/**
+	 * Add script
+	 */
+	public function add_script(){
 		$inlineFile = plugins_url('js/inline.js', __FILE__ );
 		echo "<script src='".$inlineFile."'></script>";
 	}
-public function ajax_handler(){
-	if(!isset($_POST['attachmentId'])){
-		wp_send_json(array('success'=>false, 'message'=>'Your have to provice the attachment ID.'));
-	}
-	$attachmentId = abs($_POST['attachmentId']);
-	$result = $this->regenerate($attachmentId);
-	if(is_wp_error($result)){
-		wp_send_json(array('success'=>false, 'message'=>$result->get_error_message()));
 
+	/**
+	 * handle ajax request
+	 */
+	public function ajax_handler(){
+		if(!isset($_POST['attachmentId'])){
+			wp_send_json(array('success'=>false, 'message'=>'Your have to provice the attachment ID.'));
+		}
+		$attachmentId = abs($_POST['attachmentId']);
+		$result = $this->regenerate($attachmentId);
+		if(is_wp_error($result)){
+			wp_send_json(array('success'=>false, 'message'=>$result->get_error_message()));
+
+		}
+		wp_send_json(array('success'=>true,'message'=>'generate success'));
 	}
-	wp_send_json(array('success'=>true,'message'=>'generate success'));
-}
 }
 
 new RegenerateThumbnail();
