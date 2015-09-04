@@ -28,6 +28,11 @@
                     });
                 }
             }
+
+            /**
+             * Process an item(row).
+             * @param attachmentId
+             */
             function processItem(attachmentId){
                 var nameSpan = $('#post-'+attachmentId+' > td.title.column-title.has-row-actions.column-primary > strong > a > span:nth-child(2)');
                 var statusEl = nameSpan.find('.status');
